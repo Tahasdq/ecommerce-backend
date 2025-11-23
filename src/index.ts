@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import userRouter from './routes/auth.routes.js'
+import paymentRouter from './routes/payment.routes.js'
 import cors from 'cors'
 
 dotenv.config({ path: '.env.development' }) //set path from root of folder
@@ -19,6 +20,7 @@ app.use(express.json())
 
 
 app.use("/api/user",userRouter)
+app.use("/api/payment" , paymentRouter)
 
 app.listen(process.env['PORT'],()=>{
     console.log("app running on port 8000")
