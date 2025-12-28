@@ -1,9 +1,9 @@
-import type { Request, Response } from "express";
+import type { Response } from "express";
 import Stripe from "stripe"
 
 const stripe = new Stripe('sk_test_51SVHb8JUGvmpU1wDc3RULQrwsfijW2fAzLBMQcZlLQlc5aHMV5gxVFFS37PZbexj1IQRoQG4BfpVviy6iyhNrQdV00ez91dwzF')
 
-export const makePayment = async (req:Request,res:Response)=>{
+export const makePayment = async (res:Response)=>{
 try {
      const session = await stripe.checkout.sessions.create({
     line_items: [
