@@ -16,9 +16,15 @@ mongoose.connect(process.env["MONGO_DB_URL"] ?? "")
 
 
 
-app.use(cors(  {origin: "https://ecommerce-h6dne3axgmgydjg6.centralindia-01.azurewebsites.net",credentials: true})) // if you will change it and if it cause it error it will show internet connection error to user
+app.use(cors(  {origin: "http://localhost:3000",credentials: true})) // if you will change it and if it cause it error it will show internet connection error to user
 app.use(express.json())
-    
+app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', 1);
+
+
+app.get("/test",(res:any)=>{
+    res.status(200).send("app working")
+})
 
 app.use("/api/user",userRouter)
 app.use("/api/payment" , paymentRouter)

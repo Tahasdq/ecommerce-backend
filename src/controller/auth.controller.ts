@@ -47,8 +47,9 @@ export const loginUser = async (req: Request, res: Response) => {
     const result = await AuthService.loginUser({ email, password });
     res.cookie('authToken', result.userToken, {
       httpOnly: true,
-      secure: false,           // locally we don’t use HTTPS
-      sameSite: "lax",         // or "none" + secure:true if using HTTPS
+      secure: true,           // locally we don’t use HTTPS
+      sameSite: "lax", 
+      path: "/",   
     }) 
     res.status(200).json(
       apiResponse({
