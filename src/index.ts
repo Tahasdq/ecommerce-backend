@@ -6,7 +6,7 @@ import paymentRouter from './routes/payment.routes.js'
 import productRouter from './routes/product.routes.js'
 import cors from 'cors'
 
-dotenv.config({ path: '.env.development' }) //set path from root of folder
+dotenv.config({ path: process.env["NODE_ENV"] =="local" ? '.env.local' : '.env.development' }) //set path from root of folder
 const app = express()
 
 //connect my nodejs app with mongodb
