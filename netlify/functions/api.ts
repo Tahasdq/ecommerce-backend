@@ -1,9 +1,9 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-// import userRouter from '../../src/routes/auth.routes.js';
-// import paymentRouter from '../../src/routes/payment.routes.js';
-// import productRouter from '../../src/routes/product.routes.js';
+import userRouter from '../../src/routes/auth.routes.js';
+import paymentRouter from '../../src/routes/payment.routes.js';
+import productRouter from '../../src/routes/product.routes.js';
 import cors from 'cors';
 import Serverless from 'serverless-http';
 dotenv.config({ path: process.env?.["NODE_ENV"] == "local" ? '.env.local' : '.env.development' }); //set path from root of folder
@@ -19,10 +19,10 @@ app.set('trust proxy', 1);
 app.get("/api/test",(_req:any,res:any)=>{
     res.status(200).send("app working")
 })
-// console.log("/api/user",typeof userRouter)
-// app.use("/api/user", userRouter);
-// app.use("/api/payment", paymentRouter);
-// app.use("/api/product", productRouter);
+console.log("/api/user",typeof userRouter)
+app.use("/api/user", userRouter);
+app.use("/api/payment", paymentRouter);
+app.use("/api/product", productRouter);
 // app.listen(process.env['PORT'],()=>{
 //     console.log("app running on port 8000")
 // })
