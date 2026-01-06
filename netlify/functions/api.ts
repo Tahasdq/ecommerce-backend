@@ -20,6 +20,8 @@ app.get("/api/test",(_req:any,res:any)=>{
     res.status(200).send("app working")
 })
 console.log("/api/user",typeof userRouter)
+console.log("/api/payment",typeof paymentRouter)
+console.log("/api/product",typeof productRouter)
 app.use("/api/user", userRouter);
 app.use("/api/payment", paymentRouter);
 app.use("/api/product", productRouter);
