@@ -19,10 +19,10 @@ app.set('trust proxy', 1);
 app.get("/api/test",(_req:any,res:any)=>{
     res.status(200).send("app working")
 })
-console.log("/api/user",typeof userRouter)
-app.use("/api/user", userRouter);
-app.use("/api/payment", paymentRouter);
-app.use("/api/product", productRouter);
+// console.log("/api/user",typeof userRouter)
+// app.use("/api/user", userRouter);
+// app.use("/api/payment", paymentRouter);
+// app.use("/api/product", productRouter);
 // app.listen(process.env['PORT'],()=>{
 //     console.log("app running on port 8000")
 // })
