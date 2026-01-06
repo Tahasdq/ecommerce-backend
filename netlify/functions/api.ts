@@ -16,9 +16,9 @@ app.use(cors({ origin: process.env?.["FRONTEND_URL"], credentials: true })); // 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
-app.get("/test", (res:any) => {
-    res.status(200).send("app working");
-});
+app.get("/api/test",(_req:any,res:any)=>{
+    res.status(200).send("app working")
+})
 console.log("/api/user",typeof userRouter)
 app.use("/api/user", userRouter);
 app.use("/api/payment", paymentRouter);
