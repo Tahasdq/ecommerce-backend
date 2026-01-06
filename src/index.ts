@@ -26,7 +26,7 @@ app.set('trust proxy', 1);
 app.get("/test",(res:any)=>{
     res.status(200).send("app working")
 })
-
+console.log("/api/user",typeof userRouter)
 app.use("/api/user",userRouter)
 app.use("/api/payment" , paymentRouter)
 app.use("/api/product" , productRouter)
