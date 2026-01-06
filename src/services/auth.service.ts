@@ -1,5 +1,5 @@
 
-import User from "../models/user.model.js"
+import {User} from "../models/user.model.js"
 import { createError, UserErrorResponse } from "../utils/error.js";
 import tokenService from "./token.service.js";
 import type { UserLogin, UserRegister } from "../types/user.types.js";

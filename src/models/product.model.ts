@@ -28,6 +28,6 @@ const productSchema = new mongooose.Schema(
   { timestamps: true }
 );
 
-const products = mongooose.model("product", productSchema);
+export const Product = mongooose.model("product", productSchema);
 
-export default products;
+
