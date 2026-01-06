@@ -22,9 +22,10 @@ app.get("/api/test",(_req:any,res:any)=>{
 console.log("/api/user",typeof userRouter)
 console.log("/api/payment",typeof paymentRouter)
 console.log("/api/product",typeof productRouter)
-app.use("/api/user", userRouter);
-app.use("/api/payment", paymentRouter);
-app.use("/api/product", productRouter);
+app.use("/api/user", (userRouter as any).default ?? userRouter);
+app.use("/api/payment", (paymentRouter as any).default ?? paymentRouter);
+app.use("/api/product", (productRouter as any).default ?? productRouter);
+
 // app.listen(process.env['PORT'],()=>{
 //     console.log("app running on port 8000")
 // })
