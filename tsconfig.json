@@ -42,7 +42,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "noEmit": false,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
   },
   "include": ["src/**/*" ,"netlify/functions"],
   "exclude": ["node_modules"]
