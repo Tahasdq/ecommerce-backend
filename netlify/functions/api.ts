@@ -1,9 +1,9 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import userRouter from './routes/auth.routes.js'
-import paymentRouter from './routes/payment.routes.js'
-import productRouter from './routes/product.routes.js'
+import userRouter from '../../src/routes/auth.routes.js'
+import paymentRouter from '../../src/routes/payment.routes.js'
+import productRouter from '../../src/routes/product.routes.js'
 import cors from 'cors'
 import Serverless from 'serverless-http'
 

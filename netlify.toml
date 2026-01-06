@@ -1,2 +1,11 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "NODE_ENV,PORT,MONGO_DB_URL,JWT_SECRET,FRONTEND_URL"
+
+[build]
+  command = "npm run build"
+  functions = "dist/netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
