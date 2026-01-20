@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
 
 
-app.get("/test",(res:any)=>{
+app.get("/test",(_req :any,res:any)=>{
     res.status(200).send("app working")
 })
 
