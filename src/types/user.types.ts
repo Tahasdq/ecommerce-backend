@@ -16,5 +16,6 @@ export type UserRegister ={
 
 export type UserLogin ={
   email:string,
-  password:string
+  password:string,
+  requestFor:string
 }

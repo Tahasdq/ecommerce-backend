@@ -16,16 +16,19 @@ const registerUserService = async (data : UserRegister)=>{
 }
 
 const loginUser = async (data:UserLogin)=>{
-    const {email, password} = data
+    const {email, password,requestFor} = data
     const userFound  = await User.findOne({email ,password})
 
     if(!userFound) {  throw  createError(UserErrorResponse.invalidCredentials.message, 401,UserErrorResponse.invalidCredentials.code);}
+    if(requestFor=="admin" && userFound.role!=="admin"){
+      {  throw  createError(UserErrorResponse.invalidCredentials.message, 401,UserErrorResponse.invalidCredentials.code);} 
+    }
 
     const userToken = await tokenService.generateToken(userFound) //generating otp token
     if(!userToken) {throw new Error }
 
-    const {_id} = userFound.toObject()
-    return {userId: _id , userToken}
+    const {_id,role} = userFound.toObject()
+    return {userId: _id ,role:role, userToken}
 }
 
 export  {registerUserService , loginUser}

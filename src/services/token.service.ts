@@ -8,7 +8,7 @@ import  jwt from 'jsonwebtoken'
      return token
 }
 const verifyToken = async (token:string) =>{
-   jwt.verify(token ,  "hello123")
+   return jwt.verify(token ,  "hello123")
 }
 
 export default {generateToken , verifyToken}

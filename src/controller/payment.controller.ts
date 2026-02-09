@@ -1,27 +1,115 @@
-import type { Response } from "express";
-import Stripe from "stripe"
+import type { Request , Response } from "express";
+import Stripe from "stripe";
+import { Order } from "../models/order.model.js";
+const stripe = new Stripe(process.env['STRIPE_KEY']!);
+import mongoose from "mongoose";
 
-const stripe = new Stripe('sk_test_51SVHb8JUGvmpU1wDc3RULQrwsfijW2fAzLBMQcZlLQlc5aHMV5gxVFFS37PZbexj1IQRoQG4BfpVviy6iyhNrQdV00ez91dwzF')
+export const makePayment = async (req: Request, res: Response) => {
+  try {
+    const { cartData, totalPrice, data: personalData } = req.body;
 
-export const makePayment = async (res:Response)=>{
-try {
-     const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-      price_data: {
-        currency: "aud",
-        product_data: { name: "test"},
-        unit_amount: 200 * 100,
+    const orderData = cartData.map((data:any) => ({
+      productId: new mongoose.Types.ObjectId(data.id),
+      name: data.name,
+      unitPrice: data.price,
+      quantity: data.quantity,
+      variantId: data.variantId,
+    }));
+     const order = await Order.create({ // creating unpaid order
+      email: personalData.email,
+      phone: personalData.phone,
+      items: orderData,
+      amount: totalPrice,
+      shippingAddress: {
+        line1: personalData.address,
+        city: personalData.city,
+        state: personalData.state,
       },
-      quantity: 4,
-    }
-    ],
-    mode: 'payment',
-    success_url: `http://localhost:3000?success=true`,
-  });
-  res.json({ url: session.url });
-} catch (error) {
-         console.error(error);
+    });
+    const line_items = cartData.map((item:any) => ({
+      price_data: {
+        currency: "pkr",
+        product_data: { name: item.name },
+        unit_amount:
+          (item.price / 282) * 100 < 50
+            ? (item.price + ((50 / 100) * 284 - item.price)) * 100
+            : item.price * 100,
+      },
+      quantity: item.quantity,
+    }));
+    
+   
+    const session = await stripe.checkout.sessions.create({
+      line_items,
+      mode: "payment",
+      customer_email: `${personalData.email}`,
+      metadata: {
+        orderId: order._id.toString(),
+      },
+      success_url: `${process.env?.["FRONTEND_URL"]}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env?.["FRONTEND_URL"]}/cancel`,
+    });
+
+    await Order.findByIdAndUpdate(order._id, {
+      stripeSessionId: session.id,
+    });
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Checkout session failed" });
-}
-}
+  }
+};
+
+export const webhook = async (req:Request, res:Response): Promise<void> => {
+  // Use express.raw for the webhook route ONLY
+
+  const sig = req.headers["stripe-signature"];
+  const webHookSecret =  process.env?.["STRIPE_WEBHOOK_SECRET"]
+  if(!sig || !webHookSecret ) return 
+  let event;
+
+  try {
+    // Construct the event using the raw body, signature, and secret
+    event = stripe.webhooks.constructEvent(
+      req.rawBody,
+      sig,
+      webHookSecret,
+    );
+  } catch (err : any) {
+    console.error(`Webhook Error: ${err.message}`);
+     res.status(400).send(`Webhook Error: ${err.message}`);
+     return
+    
+  }
+
+  // Handle specific event types
+  switch (event.type) {
+    case "checkout.session.completed":
+      const session = event.data.object;
+
+      const orderId = session.metadata?.["orderId"];
+      if (!orderId) return;
+
+      const order = await Order.findById(orderId);
+      if (!order) return;
+
+      if (order.paymentStatus === "paid") return;
+      order.paymentStatus = "paid";
+
+      await order.save();
+
+      console.log("Payment was successful for:", session.customer_email);
+      // Logic to fulfill the order goes here
+      break;
+
+    case "invoice.payment_failed":
+      // Handle failed subscription payment
+      break;
+
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  // Return a 200 response to acknowledge receipt
+  res.status(200).json({ received: true });
+};

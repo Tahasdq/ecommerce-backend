@@ -3,6 +3,8 @@ import AuthService from "../services/auth.service.js";
 import { apiResponse } from "../utils/apiHelper.js";
 import { UserSuccessResponse } from "../utils/sucess.js";
 import { commonErrorResponse } from "../utils/error.js";
+import tokenService from "../services/token.service.js"
+import User from "../models/user.model.js";
 
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -43,14 +45,26 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
-    const result = await AuthService.loginUser({ email, password });
-    res.cookie('authToken', result.userToken, {
+    const { email, password , requestFor } = req.body;
+    const result = await AuthService.loginUser({ email, password,requestFor });
+    console.log("result",result)
+    
+    if(result.role=="admin" && requestFor=="admin"){
+      res.cookie('adminToken', result.userToken, {
       httpOnly: true,
-      secure: true,           // locally we don’t use HTTPS
+      secure: false,           // locally we don’t use HTTPS
       sameSite: "lax", 
       path: "/",   
     }) 
+    }else{
+      res.cookie('customerToken', result.userToken, {
+      httpOnly: true,
+      secure: false,           // locally we don’t use HTTPS
+      sameSite: "lax", 
+      path: "/",   
+    }) 
+    }
+    
     res.status(200).json(
       apiResponse({
         success:true,
@@ -79,3 +93,5 @@ export const loginUser = async (req: Request, res: Response) => {
       }));
   }
 };
+
+
