@@ -3,3 +3,5 @@ export type getAllProductFilter = {
   price?: { $gte: number; $lte: number };
   "variants.size"?: { $in: string[] };
 };
+export type ProductSuccessResponseKey = "ProductCreatedSuccessfully"  | "ProductUpdatedSuccessfully" | "ProductDeletedSuccessfully" | "fetchedProductsSuccessfully" | "fetchedProductSuccessfully"
+

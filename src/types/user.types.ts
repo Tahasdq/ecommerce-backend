@@ -1,12 +1,13 @@
 // user  types 
 
-export type UserResponseValue = {
+export type ApiResponse = {
   message: string;
   code: string;
 };
-export type UserErrorResponseKey = "userAreadyExist" | "invalidCredentials"
+export type UserErrorResponseKey = "userAreadyExist" | "invalidCredentials" | "emailAlreadyVerified"
 
 export type UserSuccessResponseKey = "userRegisteredSuccessfully" | "userLoggedinSuccessfully"
+
 
 export type UserRegister ={
   email:string, 

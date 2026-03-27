@@ -1,6 +1,6 @@
-import mongooose from "mongoose";
+import mongoose from "mongoose";
 
-const productSchema = new mongooose.Schema(
+const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -12,13 +12,13 @@ const productSchema = new mongooose.Schema(
       type: String,
       required: true,
     },
-    star: { type: Number, default: 1 },
     category: {
       type: String,
       enum: ["men", "women", "kids", "accessories", "footwear"],
       required: true,
     },
-    sku: { type: String, unique: true },
+    imagePublicId:{type:String, required:true},
+    sku: { type: String },
     variants: [
       {
         size: { type: String },
@@ -30,18 +30,26 @@ const productSchema = new mongooose.Schema(
         price: { type: Number }, // optional: if variant price differs
       },
     ],
+    status: {
+    type: String,
+    enum: ["inStock", "lowStock", "outOfStock"]
+   },
+    totalStock:{type:Number},
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true },
 );
 
-productSchema.virtual("status").get(function(){
-  const totalStock = this.variants.reduce((sum,v)=>sum+v.stock,0)
-  if (totalStock === 0) return "outStock";
-  if (totalStock < 5) return "lowStock";
-  return "inStock";
-})
 
-const products = mongooose.model("product", productSchema);
+
+productSchema.pre("save",function(){
+  const totalStock = this.variants.reduce((sum,v)=>sum+v.stock,0)
+  this.totalStock = totalStock;  // always set this first
+  
+  if (totalStock === 0) return this.status = "outOfStock";
+  if (totalStock < 5) return this.status  = "lowStock";
+  return this.status = "inStock";
+})
+const products = mongoose.model("product", productSchema);
 
 export default products;

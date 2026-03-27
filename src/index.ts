@@ -9,6 +9,7 @@ import orderRouter from "./routes/order.routes.js"
 import cors from 'cors'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
+import type { Request,Response } from "express"
 
 const app = express()
 
@@ -22,7 +23,7 @@ mongoose.connect(process.env?.["MONGO_DB_URL"] ?? "")
 app.use(cors(  {origin: process.env?.["FRONTEND_URL"],credentials: true})) // if you will change it and if it cause it error it will show internet connection error to user
 // Global middleware
 app.use(express.json({
-  verify: (req, res, buf) => {
+  verify: (req:Request, _res:Response, buf) => {
     // We check if the URL starts with our webhook path
     if (req.originalUrl.startsWith('/api/payment/webhook')) {
       req.rawBody = buf; // buf is the raw Buffer from the request

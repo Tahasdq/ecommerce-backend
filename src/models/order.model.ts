@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { nanoid } from "nanoid";
 const orderItemSchema = new mongoose.Schema(
   {
     productId: {
@@ -21,8 +21,8 @@ const orderItemSchema = new mongoose.Schema(
       min: 1,
     },
     variantId:{
-          type: mongoose.Schema.Types.ObjectId,
-          required:true
+      type: mongoose.Schema.Types.ObjectId,
+      required:true
     }
   },
   { _id: false }
@@ -31,11 +31,14 @@ const orderItemSchema = new mongoose.Schema(
 const orderSchema = new mongoose.Schema({
     stripeSessionId:{
         type:String,
-        unique: true,
-        require:true
     },
      paymentIntentId: {
       type: String,
+    },
+    orderId : {
+      type:String,
+      unique:true,
+      required:true
     },
     // 👤 Guest info
     email: {
@@ -45,8 +48,11 @@ const orderSchema = new mongoose.Schema({
     phone: {
       type: String,
     },
-
-
+    userId:{
+      type:mongoose.Schema.ObjectId,
+      required:true,
+      ref:'user'
+    },
     items: {
       type: [orderItemSchema],
       required: true,
@@ -81,5 +87,12 @@ const orderSchema = new mongoose.Schema({
 },{
     timestamps: true,
   })
-
+orderSchema.pre("validate", function(next){
+  if(!this.orderId){
+    const date= new Date().toISOString().slice(0,10).replace(/-/g,"")
+    const orderId  = `ORD-${nanoid(6)}-${date}`
+    this.orderId = orderId
+  }
+  next();
+})
   export const Order = mongoose.model("Order", orderSchema);

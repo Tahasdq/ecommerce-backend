@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 export const makePayment = async (req: Request, res: Response) => {
   try {
     const { cartData, totalPrice, data: personalData } = req.body;
-
+    const user = req.user;
     const orderData = cartData.map((data:any) => ({
       productId: new mongoose.Types.ObjectId(data.id),
       name: data.name,
@@ -15,11 +15,13 @@ export const makePayment = async (req: Request, res: Response) => {
       quantity: data.quantity,
       variantId: data.variantId,
     }));
+    
      const order = await Order.create({ // creating unpaid order
       email: personalData.email,
       phone: personalData.phone,
       items: orderData,
       amount: totalPrice,
+      userId:user._id,
       shippingAddress: {
         line1: personalData.address,
         city: personalData.city,
