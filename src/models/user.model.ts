@@ -15,7 +15,8 @@ const userShema = new mongoose.Schema({
     },
     password:{
         type:String,
-        required:true
+        required:true,
+        select:false
     },
     role:{
         enum:["admin","customer"],
@@ -26,7 +27,12 @@ const userShema = new mongoose.Schema({
     emailVerificationToken:{
         type:String,
     },
+    isActive:{
+        type:Boolean,
+        default:true
+    }
 },{timestamps:true})
+
 
 const User = mongoose.model('user' , userShema)
 export default User

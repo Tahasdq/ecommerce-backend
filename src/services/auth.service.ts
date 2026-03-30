@@ -28,7 +28,7 @@ const registerUserService = async (data : UserRegister)=>{
 
 const loginUser = async (data:UserLogin)=>{
     const {email, password,requestFor} = data
-    const userFound  = await User.findOne({email ,password})
+    const userFound  = await User.findOne({email ,password}).select("+password")
     if(!userFound) {  throw  createError(UserErrorResponse.invalidCredentials.message, 401,UserErrorResponse.invalidCredentials.code);}
     if(!userFound?.isEmailVerified){
         throw  createError("Email is not verified", 401,"Email not verified")

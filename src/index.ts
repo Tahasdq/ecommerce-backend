@@ -6,6 +6,7 @@ import authRouter from './routes/auth.routes.js'
 import paymentRouter from './routes/payment.routes.js'
 import productRouter from './routes/product.routes.js'
 import orderRouter from "./routes/order.routes.js"
+import userRouter from "./routes/users.routes.js"
 import cors from 'cors'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
@@ -41,6 +42,7 @@ app.get("/test",(res:any)=>{
 })
 
 app.use("/api/auth",authRouter)
+app.use("/api/user",userRouter)
 app.use("/api/payment" , paymentRouter)
 app.use("/api/product" , productRouter)
 app.use("/api/order",orderRouter )

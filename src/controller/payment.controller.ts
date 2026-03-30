@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { Order } from "../models/order.model.js";
 const stripe = new Stripe(process.env['STRIPE_KEY']!);
 import mongoose from "mongoose";
+import products from "../models/product.model.js";
 
 export const makePayment = async (req: Request, res: Response) => {
   try {
@@ -96,6 +97,20 @@ export const webhook = async (req:Request, res:Response): Promise<void> => {
       if (!order) return;
 
       if (order.paymentStatus === "paid") return;
+      const items  = order.items.map((item)=>item);
+
+      const productFetched = await products.find({_id:{$in:items.map((item)=>item.productId)}})
+      await Promise.all(
+        productFetched.map((product:any)=>{
+        items.forEach((item:any)=>{
+          const targetVariant=product.variants.find((v:any) => v?._id.toString() === item.variantId.toString())
+          if(targetVariant){
+            targetVariant.quantity -= item.quantity;
+          }
+        })
+        return  product.save()
+      })
+    );
       order.paymentStatus = "paid";
 
       await order.save();
