@@ -91,6 +91,12 @@ export const updateProductById = async (req: Request, res: Response) => {
     const uploadResponse  = await uploadtoCloudinary(req.file.path , 'image' , true)
     payload.imagePublicId = uploadResponse.public_id
     }
+    if(Object.keys(payload).length===0) return res.status(400).json(apiResponse({
+      success: false,
+      message: ProductErrorResponse.invalidProductData.message,
+      data: null,
+      code: ProductErrorResponse.invalidProductData.code,
+    }))
     const response = await productService.updateProductById(productId , payload);
       return res
         .status(200)
