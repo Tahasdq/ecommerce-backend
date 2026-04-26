@@ -7,6 +7,7 @@ import paymentRouter from './routes/payment.routes.js'
 import productRouter from './routes/product.routes.js'
 import orderRouter from "./routes/order.routes.js"
 import userRouter from "./routes/users.routes.js"
+import dashboardRouter from "./routes/dashboard.route.js"
 import cors from 'cors'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
@@ -46,6 +47,7 @@ app.use("/api/user",userRouter)
 app.use("/api/payment" , paymentRouter)
 app.use("/api/product" , productRouter)
 app.use("/api/order",orderRouter )
+app.use("/api/dashboard",dashboardRouter )
 
 
 app.listen(process.env['PORT'],()=>{

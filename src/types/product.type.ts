@@ -1,4 +1,5 @@
 export type getAllProductFilter = {
+  name?: { $regex: string; $options: string };
   category?: { $in: string[] };
   price?: { $gte: number; $lte: number };
   "variants.size"?: { $in: string[] };

@@ -173,7 +173,12 @@ export const deleteProductById = async (req: Request, res: Response) => {
 export const getAllProducts = async (_req: Request, res: Response) => {
   try {
     const filter: getAllProductFilter = {};
-    const { categories, minPrice, maxPrice, sizes } = _req.query;
+    const { categories, minPrice, maxPrice, sizes, search } = _req.query;
+    
+    if (search && typeof search === "string") {
+      filter.name = { $regex: search, $options: 'i' };
+    }
+
     const filteredCategories =
       typeof categories === "string" ? categories.split(",") : undefined;
     const filteredSizes =
